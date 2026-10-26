@@ -1,0 +1,384 @@
+import java.util.Scanner;
+
+/*
+ * ============================================================
+ *  CHULETA UF3 - CONDICIONALES Y BUCLES EN JAVA
+ * ============================================================
+ *  Busca con Ctrl+F la etiqueta de cada sección:
+ *
+ *    #OPERADORES   #IF        #SWITCH     #TERNARIO
+ *    #WHILE        #DOWHILE   #FOR        #QUEBUCLE
+ *    #SCANNER      #PATRONES  #VALIDAR    #CENTINELA
+ *    #FIN          #MENU      #CIFRAS     #RANDOM
+ *    #ERRORES
+ *
+ *  Este archivo compila. Puedes copiar los trozos que necesites.
+ * ============================================================
+ */
+public class Chuleta {
+
+    static Scanner sc = new Scanner(System.in);
+
+    public static void main(String[] args) {
+        System.out.println("Chuleta UF3: abre el archivo y busca con Ctrl+F");
+    }
+
+    // ============================================================
+    // #OPERADORES
+    // ============================================================
+    // Comparar:  ==  !=  <  >  <=  >=      (= ASIGNA, == COMPARA)
+    // Lógicos:   &&  (Y: las dos true)
+    //            ||  (O: basta una true)
+    //            !   (NO: le da la vuelta)
+    // Resto:     %   -> n % 2 == 0 es par, n % 3 == 0 múltiplo de 3
+    // Atajos:    x++  x--  x += 5  x -= 2  x *= 2  x /= 10
+    static void operadores(int n) {
+        boolean par = n % 2 == 0;
+        boolean entre1y10 = n >= 1 && n <= 10;     // dentro del rango
+        boolean fuera = n < 1 || n > 10;           // fuera del rango
+        boolean ni16niMult3 = n != 16 && n % 3 != 0;
+    }
+
+    // ============================================================
+    // #IF  (if / else if / else)
+    // ============================================================
+    // - Entra en la PRIMERA condición true y se salta el resto.
+    // - EL ORDEN IMPORTA: en el 2º else if ya sé que nota >= 5.
+    // - Pon SIEMPRE llaves { }.
+    static void ejemploIf(int nota) {
+        if (nota < 5) {
+            System.out.println("Suspenso");
+        } else if (nota < 7) {
+            System.out.println("Aprobado");
+        } else if (nota < 9) {
+            System.out.println("Notable");
+        } else {
+            System.out.println("Sobresaliente");
+        }
+
+        // if anidado (un if dentro de otro)
+        if (nota >= 5) {
+            if (nota == 10) {
+                System.out.println("Matrícula");
+            }
+        }
+    }
+
+    // ============================================================
+    // #SWITCH  (compara un VALOR concreto, no sirve para rangos)
+    // ============================================================
+    // - Vale con int, char y String. NO con double ni boolean.
+    // - Sin break SIGUE ejecutando los case de abajo.
+    // - Varios case seguidos = comparten acciones.
+    // - default = si no coincide ninguno (como el else).
+    static void ejemploSwitch(int mes, String dia) {
+        int dias;
+        switch (mes) {
+            case 1: case 3: case 5: case 7: case 8: case 10: case 12:
+                dias = 31;
+                break;
+            case 4: case 6: case 9: case 11:
+                dias = 30;
+                break;
+            case 2:
+                dias = 28;
+                break;
+            default:
+                dias = -1;   // mes no válido
+        }
+
+        switch (dia) {                 // switch con String
+            case "sábado":
+            case "domingo":
+                System.out.println("Finde");
+                break;
+            default:
+                System.out.println("Entre semana");
+        }
+    }
+
+    // ============================================================
+    // #TERNARIO   condición ? valorSiTrue : valorSiFalse
+    // ============================================================
+    // Devuelve un VALOR. No sirve para ejecutar bloques de código.
+    static void ejemploTernario(int a, int b, int nota) {
+        int mayor = (a > b) ? a : b;
+        String paridad = (a % 2 == 0) ? "par" : "impar";
+        System.out.println(nota >= 5 ? "Aprobado" : "Suspenso");
+    }
+
+    // ============================================================
+    // #WHILE   comprueba ANTES -> se puede ejecutar 0 veces
+    // ============================================================
+    // ¡Dentro tiene que cambiar algo de la condición o es infinito!
+    static void ejemploWhile() {
+        int segundos = 5;
+        while (segundos > 0) {
+            System.out.println(segundos + "...");
+            segundos--;                     // <- sin esto, infinito
+        }
+        System.out.println("¡Despegue!");
+    }
+
+    // ============================================================
+    // #DOWHILE   comprueba DESPUÉS -> se ejecuta MÍNIMO 1 vez
+    // ============================================================
+    // ¡Lleva ; después del while!
+    static void ejemploDoWhile() {
+        int i = 1;
+        do {
+            System.out.println(i);
+            i++;
+        } while (i <= 5);                   // <- ; obligatorio
+    }
+
+    // ============================================================
+    // #FOR   cuando SÉ cuántas vueltas
+    // ============================================================
+    // for (inicialización ; condición ; incremento)
+    //   inicialización -> 1 sola vez al principio
+    //   condición      -> antes de cada vuelta
+    //   incremento     -> después de cada vuelta
+    // La i declarada en el for NO existe fuera del for.
+    static void ejemploFor(int n) {
+        for (int i = 1; i <= n; i++) {          // 1 2 3 ... n
+            System.out.println(i);
+        }
+        for (int i = 10; i >= 0; i -= 2) {      // 10 8 6 4 2 0
+            System.out.print(i + " ");
+        }
+        for (int i = 0; i <= 100; i += 5) {     // 0 5 10 ... 100
+            System.out.print(i + " ");
+        }
+        System.out.println();
+
+        // El mismo for escrito como while:
+        int j = 1;
+        while (j <= n) {
+            System.out.println(j);
+            j++;
+        }
+    }
+
+    // ============================================================
+    // #QUEBUCLE   ¿qué bucle uso?
+    // ============================================================
+    //  ¿Sé cuántas vueltas?  ¿Puede no entrar nunca?   Bucle
+    //  Sí                    -                         for
+    //  No                    Sí                        while
+    //  No                    No (mínimo 1 vez)         do-while
+    //
+    //  Condicionales:
+    //  algo pasa o no            -> if
+    //  dos caminos               -> if-else
+    //  rangos / && ||            -> if / else if
+    //  valores concretos (1,2,3) -> switch
+    //  elegir entre dos valores  -> ternario ? :
+
+    // ============================================================
+    // #SCANNER
+    // ============================================================
+    // import java.util.Scanner;   (arriba del todo, fuera de la clase)
+    static void ejemploScanner() {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.print("Edad: ");
+        int edad = sc.nextInt();
+
+        System.out.print("Precio: ");
+        double precio = sc.nextDouble();   // en español se escribe con COMA: 4,5
+
+        sc.nextLine();   // <- LIMPIAR: después de nextInt/nextDouble y antes de nextLine
+
+        System.out.print("Nombre: ");
+        String nombre = sc.nextLine();     // línea entera
+        // sc.next() lee solo una palabra
+
+        // Comparar texto: SIEMPRE equals, NUNCA ==
+        if (nombre.equals("fin")) { }
+        if (nombre.equalsIgnoreCase("FIN")) { }   // ignora mayúsculas
+
+        sc.close();   // al final del programa
+    }
+
+    // ============================================================
+    // #PATRONES
+    // ============================================================
+    //  ANTES del bucle           DENTRO del bucle
+    //  int cont = 0;             if (...) cont++;        contador
+    //  int suma = 0;             suma += x;              acumulador
+    //  long prod = 1;            prod *= x;              producto (¡empieza en 1!)
+    //  boolean hay = false;      if (...) hay = true;    bandera
+    //  int max = primer dato;    if (x > max) max = x;   máximo
+    //  int min = primer dato;    if (x < min) min = x;   mínimo
+    //
+    //  Media con decimales: (double) suma / cont   <- cast ANTES de dividir
+    static void ejemploPatrones() {
+        int suma = 0, cont = 0, positivos = 0, max = 0;
+        boolean hayNegativo = false;
+
+        for (int i = 1; i <= 5; i++) {
+            System.out.print("Número " + i + ": ");
+            int x = sc.nextInt();
+
+            suma += x;                          // acumulador
+            cont++;                             // contador
+            if (x > 0) positivos++;             // contador con condición
+            if (x < 0) hayNegativo = true;      // bandera
+            if (i == 1 || x > max) max = x;     // máximo (1º dato o mayor)
+        }
+
+        if (cont > 0) {
+            double media = (double) suma / cont;
+            System.out.println("Media: " + media);
+        }
+        System.out.println("Máximo: " + max);
+        if (hayNegativo) System.out.println("Hay algún negativo");
+
+        // Factorial (usa long: con int se desborda desde 13!)
+        int n = 5;
+        long fact = 1;
+        for (int i = 1; i <= n; i++) {
+            fact *= i;
+            System.out.print(i + (i < n ? " x " : " = "));   // 1 x 2 x 3 x 4 x 5 =
+        }
+        System.out.println(fact);
+    }
+
+    // ============================================================
+    // #VALIDAR   pedir un dato hasta que sea correcto (do-while)
+    // ============================================================
+    static int validar() {
+        int n;
+        do {
+            System.out.print("Número del 1 al 10: ");
+            n = sc.nextInt();
+            if (n < 1 || n > 10) {
+                System.out.println("Fuera de rango, otra vez.");
+            }
+        } while (n < 1 || n > 10);
+        return n;
+
+        // Para "hasta que sea positivo":  } while (n <= 0);
+    }
+
+    // ============================================================
+    // #CENTINELA   leer números hasta un 0 (el 0 NO cuenta)
+    // ============================================================
+    // Truco: 1ª lectura ANTES del bucle, la siguiente al FINAL.
+    static void centinela() {
+        int suma = 0, cont = 0;
+
+        System.out.print("Número (0 para terminar): ");
+        int n = sc.nextInt();
+
+        while (n != 0) {
+            suma += n;
+            cont++;
+            System.out.print("Número (0 para terminar): ");
+            n = sc.nextInt();
+        }
+
+        System.out.println("Has metido " + cont + " números");
+        if (cont > 0) {
+            System.out.println("Media: " + (double) suma / cont);
+        }
+    }
+
+    // ============================================================
+    // #FIN   repetir hasta que el usuario escriba "fin"
+    // ============================================================
+    static void hastaFin() {
+        int contador = 0;
+
+        System.out.print("Nombre (fin para salir): ");
+        String nombre = sc.nextLine();
+
+        while (!nombre.equals("fin")) {
+            contador++;
+            System.out.print("Nota: ");
+            int nota = sc.nextInt();
+            sc.nextLine();                         // <- limpiar tras nextInt
+
+            System.out.print("Nombre (fin para salir): ");
+            nombre = sc.nextLine();
+        }
+        System.out.println("Total: " + contador);
+    }
+
+    // ============================================================
+    // #MENU   do-while + switch
+    // ============================================================
+    static void menu() {
+        int opcion;
+        do {
+            System.out.println("1. Sumar");
+            System.out.println("2. Restar");
+            System.out.println("3. Salir");
+            System.out.print("Opción: ");
+            opcion = sc.nextInt();
+
+            switch (opcion) {
+                case 1:
+                    System.out.print("a: "); int a = sc.nextInt();
+                    System.out.print("b: "); int b = sc.nextInt();
+                    System.out.println("Suma: " + (a + b));
+                    break;
+                case 2:
+                    System.out.print("a: "); int c = sc.nextInt();
+                    System.out.print("b: "); int d = sc.nextInt();
+                    System.out.println("Resta: " + (c - d));
+                    break;
+                case 3:
+                    System.out.println("¡Adiós!");
+                    break;
+                default:
+                    System.out.println("Opción incorrecta");
+            }
+        } while (opcion != 3);
+    }
+
+    // ============================================================
+    // #CIFRAS   n % 10 = última cifra   |   n / 10 = la quita
+    // ============================================================
+    static void cifras(int numero) {
+        int aux = numero;
+        int suma = 0, cantidad = 0, reves = 0;
+
+        while (aux > 0) {
+            int cifra = aux % 10;
+            suma += cifra;                  // suma de cifras
+            cantidad++;                     // nº de cifras
+            reves = reves * 10 + cifra;     // número al revés
+            aux = aux / 10;
+        }
+        System.out.println(numero + " al revés es " + reves);
+    }
+
+    // ============================================================
+    // #RANDOM   número aleatorio
+    // ============================================================
+    static void aleatorio() {
+        int r = (int) (Math.random() * 101);        // 0..100
+        int dado = (int) (Math.random() * 6) + 1;   // 1..6
+        // Fórmula: (int)(Math.random() * (max - min + 1)) + min
+    }
+
+    // ============================================================
+    // #ERRORES   los que quitan puntos
+    // ============================================================
+    // 1. if (x = 5)       -> es  ==  (con boolean compila y está MAL)
+    // 2. if (x > 5);      -> ese ; deja el if vacío. Igual con for/while
+    // 3. if sin llaves con 2 líneas -> la 2ª se ejecuta SIEMPRE
+    // 4. switch sin break -> se ejecutan los case de abajo
+    // 5. do { } while (c) -> falta el ;
+    // 6. Bucle infinito   -> no cambias la variable de la condición
+    // 7. suma / n con int -> sin decimales. Usa (double) suma / n
+    // 8. texto == "fin"   -> usa texto.equals("fin")
+    // 9. nextInt() y luego nextLine() -> devuelve "". Mete sc.nextLine()
+    // 10. nextDouble() con 4.5 -> error, en español se escribe 4,5
+    // 11. Factorial con int -> se desborda. Usa long
+    // 12. max = 0 con números negativos -> MAL. Usa el primer dato
+    // 13. Usar la i del for fuera del for -> no existe
+    // 14. Prueba casos límite: 0, negativos, primer y último valor
+}
